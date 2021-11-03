@@ -1,0 +1,13 @@
+<div class="card" style="width: 20rem;">
+	<!-- <a href="{{ instance.get_absolute_url }}">
+		{% if instance.image %}
+		<img class="card-img-top" src="{{ instance.image.url}}">
+		{% endif %}
+	</a> -->
+	<div class="card-body">
+		<h4 class="card-title">{{ instance.first_name }} {{ instance.last_name }}</h4>
+		<p class="card-text">{{ instance.description|truncatewords:12 }}</p>
+		<a href="{{ instance.get_absolute_url }}">View</a>
+		
+	</div>
+</div>

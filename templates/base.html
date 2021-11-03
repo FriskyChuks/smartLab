@@ -1,0 +1,35 @@
+<!doctype html>
+
+    {% include 'base_files/css.html' %}
+    {% include 'base_files/js.html' %}
+    
+  </head>
+  <body>
+    {% include 'base_files/navbar2.html' %}
+
+    <div class='container'>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %} alert-{{ message.tags }} {% endif %} alert-dismissible fade show" role="alert">
+              <ul class="messages">
+                  <li>{{ message }}</li>
+              </ul>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </div>
+
+    
+    {% include 'base_files/footer.html' %}
+ </body>
+
+</html>
+
+ 
+
+

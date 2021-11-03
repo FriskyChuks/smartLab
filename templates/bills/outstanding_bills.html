@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+   
+{% if not os_total %}
+<center>
+    <a href="{% url 'wallet' pid=patient.id %}">
+        <button type="button" class="btn btn-success">Load Wallet</button>
+    </a>
+    <a href="{% url 'pending_bills' pid=patient.id %}">
+        <button type="button" class="btn btn-primary">Pay Pending Bills</button>
+    </a>
+    </div>
+  </center>
+    <br>
+  <center>  
+    <h2>No Outstanding bill to offset! </h2>
+    <h3>Congratulations!</h3>
+  </center>
+
+{% else %}
+    
+  <div class="container">
+    <a href="{% url 'wallet' pid=patient.id %}">
+        <button type="button" class="btn btn-success">Load Wallet</button>
+    </a>
+    <a href="{% url 'pending_bills' pid=patient.id %}">
+        <button type="button" class="btn btn-primary">Pay Pending Bills</button>
+    </a>
+    </div>
+    <br>
+        
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">  
+          <div class="card">
+            <div class="card-header">
+              {% include 'bills/card/temp.html' %}
+            </div>
+            <div class="col-md-12">
+              <div id="extraControls" class="hidden">
+                <br>
+                <form action="" method="POST">{% csrf_token %}
+                    <h4>Details of outstanding bills</h4>
+                    <table class="table table-borderless">
+                      <tbody>
+                        {% for bill in med_serv_outstanding_bill %}
+                        <tr>
+                          <td>{{ bill.date_created }}</td>
+                          <td>{{ bill.medical_service.medical_service.medical_service }}</td>
+                          <td>{{ bill.medical_service.medical_service.price }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                          <td><h5>Pay Now (N)</h5></td>
+                          <td></td>
+                          <td><h3>{{ os_total }}0</h3></td>
+                        </tr>
+                    </table>
+                    <button style="float: right;" class="btn btn-success">Offset Bills</button>
+                </form>
+                <br>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endif %}
+    
+
+{% endblock %}

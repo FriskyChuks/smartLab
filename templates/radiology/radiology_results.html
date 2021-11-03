@@ -1,0 +1,83 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Radiology Request Detail {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="container">
+<form method="POST" class="row g-3 needs-validation" novalidate>{% csrf_token%}
+    <h3>Radiology Report</h3>
+    <div class="col-md-4">
+      <label for="validationCustom01" class="form-label">Patient</label>
+      <input type="text" class="form-control" id="validationCustom01" value="{{radiology_request.patient.first_name}} {{radiology_request.patient.last_name}}" readonly>
+      <div class="valid-feedback">
+        Looks good!
+      </div>
+    </div>
+    <div class="col-md-4">
+        <label for="validationCustom01" class="form-label">Requested Investigation</label>
+        <input type="text" class="form-control" id="validationCustom01" value="{{radiology_request.radiology_service}}" readonly>
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+      </div>
+    <div class="col-md-12">
+      <label for="validationCustom03" class="form-label">Findings</label>
+      <textarea class="form-control" name="findings" id="validationCustom04" cols="30" rows="10"required></textarea>
+      <div class="invalid-feedback">
+        Enter Findings.
+      </div>
+    </div>
+    <div class="col-md-12">
+        <label for="validationCustom03" class="form-label">Other Findings</label>
+        <textarea class="form-control" name="other_findings" id="validationCustom05" cols="30" rows="10"required>Nil</textarea>
+    </div>
+    <div class="col-md-4">
+        <label for="validationCustom01" class="form-label">Diagnosis</label>
+        <input type="text" class="form-control" id="validationCustom06" name="diagnosis" required>
+        <div class="valid-feedback">
+          Enter Diagnosis!
+        </div>
+    </div>
+    <div class="col-12">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+        <label class="form-check-label" for="invalidCheck">
+          I am sure I want to sent report
+        </label>
+        <div class="invalid-feedback">
+          You must admit before submitting.
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit form</button>
+    </div>
+  </form>
+</div>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
+  
+{% endblock %}

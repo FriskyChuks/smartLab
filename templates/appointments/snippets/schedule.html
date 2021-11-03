@@ -1,0 +1,20 @@
+<div class="col-md-5">
+    {% for patient in patient %}
+      <h4>Appointment Booking</h4><br>
+      <h5>{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_names }} ({{ patient.id }})</h5>
+      <form class="row g-2" id="form" method="POST">{% csrf_token %}
+          <div class="col-md-10">*Select Clinic: {{ instance.clinic }}</div><br>
+          <div class="col-md-6">*Appointment date: {{ instance.appointment_date }}</div>
+          <div class="col-md-4">*Time: {{ instance.appointment_time }}</div>
+          <div class="col-md-10">Reason for Appointment: {{ form.reason }}</div>
+          <!-- <div class="col-md-3">
+              am/pm: <select class="form-select" aria-label="Default select example">
+                  <option value="1">AM</option>
+                  <option value="2">PM</option>
+              </select>
+          </div> -->
+          <br>
+          <div class="col-md-12"><input type="submit" class="btn btn-success", value="submit"></div>
+      </form>
+    {% endfor %}
+  </div>

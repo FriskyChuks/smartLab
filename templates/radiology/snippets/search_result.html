@@ -1,0 +1,73 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Foto {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="container">
+    {% if not query %}
+            <center><h3>{{ query1 }}</h3></center>
+    {% else %}
+        {% if patient.count == 1 %}
+            <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6> <br>
+            {% for pt in patient %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">PID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Gender</th>
+                    <th scope="col">Marital status</th>
+                    <th scope="col">Date of Birth</th>
+                </tr>
+                </thead>
+            
+                <tbody>          
+                        <tr>
+                            <th scope="row"><a href="{{ pt.get_absolute_url }}">{{ pt.id }}</a></th>
+                            <!-- <td>{{ qs.id }}</td> -->
+                            <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
+                            <td>{{ pt.gender|capfirst }}</td>
+                            <td>{{ pt.marital_status|capfirst }}</td>
+                            <td>{{ pt.date_of_birth|capfirst }}</td>
+                        </tr>              
+                </tbody>
+            </table>  
+                {% include 'radiology/snippets/card.html' %}
+            {% endfor %} 
+        {% else %}
+        <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
+        <hr>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">PID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Marital status</th>
+            <th scope="col">Date of Birth</th>
+        </tr>
+        </thead>
+    
+        <tbody>
+            {% for pt in patient %}            
+                <tr>
+                    <th scope="row"><a href="{{ pt.get_absolute_url }}">{{ pt.id }}</a></th>
+                    <!-- <td>{{ qs.id }}</td> -->
+                    <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
+                    <td>{{ pt.gender|capfirst }}</td>
+                    <td>{{ pt.marital_status|capfirst }}</td>
+                    <td>{{ pt.date_of_birth|capfirst }}</td>
+                </tr> 
+            {% endfor %}              
+        </tbody>
+    </table> 
+        {% endif %} 
+        
+    {% endif %}              
+</div>
+{% endblock %}

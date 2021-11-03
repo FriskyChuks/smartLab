@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Foto {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div style="text-align: center;">
+<form method="POST" enctype="multipart/form-data">{% csrf_token %}
+  {{form.foto}}
+  <input type="submit" class="btn btn-success", value="Upload image">
+</form>
+{% endblock %}

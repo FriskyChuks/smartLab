@@ -1,0 +1,36 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Lab Units {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div class="card-footer">
+  <small class="text-muted">
+    <a href=""><h5 class="card-title" style="color: darkblue;">Central Laboratory</h5></a>
+  </small>
+</div>
+<br>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  {% for unit in units %}
+  <div class="col">
+    <div class="card h-100">
+      <!-- <img src="..." class="card-img-top" alt="..."> -->
+      <div class="card-body">
+        <h5 class="card-title"><a href="#">{{ unit.title }}</a></h5>
+        <p class="card-text">
+          Welcome to Hermatology unit. Statistics loading shortly!
+        </p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+
+{% endblock %}

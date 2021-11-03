@@ -1,0 +1,124 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Lab Request {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function()
+    {
+        document.getElementById("txtDisplay").style.display="none";
+        $('.chkbox').click(function()
+        {
+            var selectedValue = "";
+            var myArray = [];
+            $('.chkbox:checked').each(function()
+            {
+                selectedValue += $(this).val()+",";
+                myArray.push(selectedValue)
+            });
+            selectedValue = selectedValue.substring(0,selectedValue.length-1);
+            $('#txtDisplay').val(selectedValue);
+            
+        });
+        // $('#btnRequest').click(function()
+        // {
+        //     alert("Request Successful!")
+        // });
+    });
+</script>
+<style>
+    #form {
+      border: 0.5px solid grey;
+      border-radius: 5px;
+      /* background-color: #f2f2f2; */
+      padding: 5px;
+    }
+</style>
+
+
+<div class="container">
+    <form id="form" method="POST" action="">{% csrf_token %}
+    <div class="row g-2">
+        <div class="col-md-8">
+            <h3>Lab Investigations Sheet</h3>
+        </div>
+        <div class="col-md-4">
+            <span style="float: right;"><input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation"></span>
+        </div>
+    </div>
+    <hr>
+
+       <div class="clear">
+            <h5>{{ patient.first_name }} {{ patient.last_name }}; 
+                {{ patient.date_of_birth|timesince }}; 
+                {{ patient.gender|capfirst }}
+            </h5>
+       </div>
+       <hr>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <h4>Microbiology</h4>
+            {% for mc in microbiology_tests %}
+                {% if mc.compound_test.title == 'M/C/S' %}
+                    <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
+                    {{ mc.title }} <i><b>(M/C/S)</b></i> <br>
+                {% endif %}
+                {% if mc.compound_test.title == 'P/N' %}
+                    <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
+                    {{ mc.title }} <i><b>(P/N)</b></i> <br>
+                {% else %}
+                    {% if not mc.compound_test %}
+                        <input type="checkbox" value="{{ mc.id }}" class="chkbox"> 
+                        {{ mc.title }}<br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <h4>Chemical Pathology</h4>
+            {% for chempath in chem_path_tests %}
+                {% if chempath.compound_test.title == 'Lipid Profile' %}
+                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
+                    {{ chempath.title }} <i><b>(Lipid Profile)</b></i> <br>
+                {% endif %}
+                {% if chempath.compound_test.title == 'LFT' %}
+                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
+                    {{ chempath.title }} <i><b>(LFT)</b></i> <br>
+                {% endif %}
+                {% if chempath.compound_test.title == 'E/u/Cr' %}
+                    <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
+                    {{ chempath.title }} <i><b>(E/u/Cr)</b></i> <br>
+                {% else %}
+                    {% if not chempath.compound_test %}
+                        <input type="checkbox" value="{{ chempath.id }}" class="chkbox"> 
+                        {{ chempath.title }}<br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-md-4">
+            <h4>Hermatology</h4>
+            {% for herma in hermatology_tests %}
+                {% if herma.compound_test.title == 'FBC' %}
+                    <input type="checkbox" value="{{ herma.id }}" class="chkbox"> 
+                    {{ herma.title }} <i><b>(FBC)</b></i><br>
+                {% else %}
+                    {% if not herma.compound_test %}
+                        <input type="checkbox" value="{{ herma.id }}" class="chkbox"> 
+                        {{ herma.title }}<br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <input type="text" id="txtDisplay" name="test_id"> 
+    <hr>
+    <center><input type="submit" id="btnRequest" class="btn btn-success" value="Request Investigation"></center>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Foto {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<style>
+  div.gallery img {
+            width: 180px;
+            height: 180px;
+          }
+
+          div.desc {
+            padding: 15px;
+            text-align: center;
+          }
+</style>
+
+<div class="container">
+{% for patient in patient %}
+  <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+    {% for p in patient.patientencounter_set.all|dictsortreversed:"id"|slice:":1" %}
+      <a href="{% url 'request_detail' enc_id=p.id %}"><button class="btn btn-primary">View Investigation Details</button></a>
+      {% if p.active %}
+        <a href="{% url 'lab_request' enc_id=p.id %}"><button class="btn btn-primary">Request Lab Investigation</button></a>
+      {% endif %}
+    {% endfor %}
+    <hr>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-3">
+      {% if patient.foto %}
+      <div class="gallery">
+        <img src="{{ patient.foto.url }}" alt="No Image" width="600" height="400">
+      {% endif %}
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <!-- <div class="card">
+        <div class="card-body"> -->
+          <h4 class="card-title">{{ patient.first_name }} {{ patient.last_name }} {{ patient.other_name }} || {{ patient.id }}</h4>
+          <p class="card-text">
+            Phone:&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.phone_1 }} <br>
+            Age:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.date_of_birth|timesince }} old <br>
+            Gender: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ patient.gender|capfirst }} <br> 
+            Marital status:&nbsp; {{ patient.marital_status|capfirst }} <br>
+            L.G.A: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.l_g_a|capfirst }} <br>
+            State: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ patient.state|capfirst }} <br>
+            Nationality:&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {{ patient.country|capfirst }} <br>
+            Current Location: {% for p in patient.patientencounter_set.all|dictsortreversed:"id" %}
+            {% if p.active  %}
+              {% if p.current_clinic  %}                       
+                  {{ p.current_clinic.clinic }} Clinic
+              {% else %}
+                  {{ p.current_ward.ward }} Ward           
+              {% endif %}
+            {% endif %}
+          {% endfor %}   
+          </p>
+    </div>    
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-sm-12">
+    <h4 class="panel-title"><strong>Patient Account Information</strong></h4>
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                    <form method="POST" action="">{% csrf_token %}
+                        <div class="row g-2">
+                            <div id="detail" class="col-md-2">      
+                            </div>    
+                            <div id="detail" class="col-md-8" style="float:center">
+                                <!-- TABLE -->
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>Patient:</td>
+                                            <td><h3> {{patient}}</h3></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Wallet Balance:</td>
+                                            <td><h3> N{{initial_balance}}</h3></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+  </div>
+
+{% endblock %}

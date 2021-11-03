@@ -1,0 +1,9 @@
+{% if request.user.group.name == 'cashier' %}
+    {% include 'bills/card/bill_search_result.html' %}
+{% elif request.user.group.name == 'MLS' or request.user.group.name == 'admin' %}
+    {% include 'labs/snippets/search_result.html' %}
+{% elif request.user.group.name == 'radiology' or request.user.group.name == 'admin' %}
+    {% include 'radiology/snippets/search_result.html' %} 
+{% else %}
+    {% include 'patients/search_result1.html' %}
+{% endif %}

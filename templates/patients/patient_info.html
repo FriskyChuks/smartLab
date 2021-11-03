@@ -1,0 +1,7 @@
+{% if request.user.group.name == 'cashier' %}
+  {% include 'bills/card/patient_info.html' %}
+{% elif request.user.group.name == 'MLS' %}
+  {% include 'labs/snippets/patient_info.html' %}
+{% else %}
+  {% include 'patients/snippets/info.html' %}
+{% endif %}

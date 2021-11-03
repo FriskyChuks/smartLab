@@ -1,0 +1,18 @@
+
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Appointments {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+{% include 'reports/snippets/transaction_template.html' %}
+<br>
+<h4>Total Cash Collection: N{{ sum_total|intcomma }}0</h4>
+
+{% include 'reports/snippets/transaction_table.html' with payments=payment %}
+
+{% endblock %}

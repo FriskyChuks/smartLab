@@ -1,0 +1,99 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} LAb Results {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<script>
+
+    arr=[];
+    $( ".result" ).each(function( index ) {
+        key=$( this ).prop('id');
+        value=$(this).val();
+        arr.push(key+':'+value);   
+    });
+
+      console.log(arr);
+
+      obj={};
+
+    $( ".result" ).each(function( index ) {
+        key=$( this ).prop('id');
+        value=$(this).val();
+
+        obj[key]=value; 
+    });
+
+      console.log(obj);
+</script>
+
+{% if lab_request %}
+<div class="container">
+    <div class="row">
+      <div class="col-sm-12">  
+        <div class="card">
+          <div class="card-header">
+            <h5>Medical Lab Result Sheet: <small>Enter your results here </small></h5>
+          </div>
+  
+          <div class="card-body">
+
+            {% for patient_detail in lab_request|slice:":1" %}
+                <h3>{{ patient_detail.patient.first_name }} {{ patient_detail.patient.last_name }} | 
+                {{ patient_detail.patient.id }}</h3>
+                {{ patient_detail.patient.date_of_birth|timesince }}; {{ depatient_detailtail.patient.gender|capfirst }}
+                {% if diagnosis %}
+                <br> Diagnosis: 
+                <ul>
+                    {% for d in diagnosis %}
+                    <li>{{ d.diagnosis.title }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <hr>
+            {% endfor %}
+            <form id="myForm" method="POST" action="">{% csrf_token %} 
+                <div class="row lg-2">
+                    {% for request in lab_request %}
+                    {% if request.test.compound_test %}
+                        <div class="col-md-6">
+                            {% if request.test.title == 'Pregnancy Test'  %}
+                                {{ request.test }}:
+                                    <select class="form-select" aria-label="Default select example">
+                                    <option value="Negative">Negative</option>
+                                    <option value="Positive">Positive</option>
+                                    </select>
+                            {% else %}
+                                {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="col-md-6">
+                                {{ request.test }}:<input type="text" class="form-control" id="" name="{{ request.id }}">
+                        </div>
+                    {% endif %}
+                    {% endfor %} 
+                </div>
+                <br><br>
+                <button type="submit" class="btn btn-primary" style="float: right;">Send Result</button>
+            </form>
+        </div>
+        <div class="card-header">  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% else %}
+<center>
+    <div style="color: green;">
+        <h1>No pending Investigation for this patient</h1>
+        <br>
+        <h1>Thank You!</h1>
+    </div>
+</center>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,367 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Folder {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} 
+<style>
+  .table.no-cellpadding td{
+  padding: 0;
+}
+</style>
+
+{% for patient in current_encounter|slice:":1" %}
+  {% if patient.current_clinic %}
+    <a href="{% url 'clinic_visits_display' id=patient.current_clinic.id %}"><-- Go to {{ patient.current_clinic }}</a>
+  {% else %}
+  <a href="{% url 'ward_admission_display' id=patient.current_ward.id %}"><-- Go to {{ patient.current_ward }}</a>
+  {% endif %}
+{% endfor %}
+<br>
+<div>
+    <p>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#notes" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Notes History
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#vitals" aria-expanded="false" aria-controls="collapseExample">
+        Vital signs History
+        </button>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#drugs" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Drug History
+        </a>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#lab" aria-expanded="false" aria-controls="collapseExample">
+        Lab History
+        </button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#services" aria-expanded="false" aria-controls="collapseExample">
+        Medical Services History
+        </button>
+        <a class="btn btn-primary" data-bs-toggle="collapse" href="#radiology">
+          Radiology History
+        </a>
+        {% if request.user.group.name == 'cashier' or request.user.group.name == 'admin' %}
+          {% for encounter in current_encounter|slice:":1" %}
+            {% for bill in encounter.bill_set.all|slice:":1" %}
+              {% if bill %}
+                <a class="btn btn-primary" href="{% url 'pending_bills' pid=encounter.patient.id %}" target="_blank">
+                  View Patient Bills
+                </a>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+        {% for e in current_encounter|slice:":1" %}
+        <a style="background-color:black; color: white;" 
+           href="{% url 'archives' patient_id=e.patient.id %}" target="_blank">
+           <button type="button" class="btn btn-info">Archives</button>
+        </a>
+        {% endfor %}
+    </p>
+
+    {% for e in current_encounter %}
+      <h6>
+        <b>{{ e.patient.first_name }} 
+        {{ e.patient.last_name }}
+        {{ e.patient.other_names }} |{{ e.patient.id }} </b>;&nbsp; &nbsp;
+        {{ e.patient.date_of_birth|timesince }};&nbsp; &nbsp;
+        {{ e.patient.gender|capfirst }}; &nbsp; &nbsp;
+      </h6>
+    {% endfor %}
+    
+    
+
+    <div class="collapse" id="notes">
+        <div class="card card-body">
+          {% for encounter in current_encounter|slice:":1" %}
+            <button style="float: right;">
+              <a href="{% url 'patient_notes' id=encounter.id %}" >
+                Add New Note
+              </a>
+            </button>
+           {% endfor %}
+            <h4>Patient Notes </h4> 
+            {% for patient in current_encounter %}
+              {% for notes in patient.patientnotes_set.all|dictsortreversed:"date" %} 
+                <table class="table table-striped table-hover table-responsive">
+                    <thead>                 
+                     <tr>
+                      {{ notes.note_type|capfirst }} &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; 
+                        {{ notes.sub_title }}
+      
+                        <tr>
+                          <td><b>Date written: <br> </b>{{ notes.date|time:"h:i a" }} <br> {{ notes.date|date:"d-m-y" }}</td> 
+                          <td><b>Note: </b><br> {{ notes.note }}</td>
+                          <td><b>Written by</b><br> {{ notes.created_by }}</td>
+                          <td><b>Last updated: </b><br> {{ notes.updated }}</td>
+                      </tr>                     
+                     </tr>
+                    </thead>   
+                </table>
+              <br>
+              {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    <!-- <br> -->
+
+    
+    <div class="collapse" id="vitals">
+            <div class="card card-body">
+              {% for encounter in current_encounter|slice:":1" %}
+                <button style="float: right;">
+                  <a href="{% url 'take_vital_signs' id=encounter.id %}" >
+                    Take New Vital Signs
+                  </a>
+                </button>
+              {% endfor %}
+                <table class="table table-striped table-hover table-responsive">
+                    <h4>Vital Signs</h4>
+                    <thead>
+                      <tr>
+                        <!-- <th scope="col">Ecounter</th> -->
+                        <!-- <th scope="col">PID</th> -->
+                        <th scope="col">Date</th>
+                        <th scope="col">Weight(Kg)</th>
+                        <th scope="col">Temp(°C)</th>
+                        <th scope="col">B/P</th>
+                        <th scope="col">Pulse Rate</th>
+                        <th scope="col">SP02</th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% for patient in current_encounter %}
+                        {% for vitals in patient.patientvitalsigns_set.all|dictsortreversed:"date" %}            
+                        <tr>
+                            <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                            <td>{{ vitals.date }}</td>
+                            <td>{{ vitals.weight }}</td>
+                            <td>{{ vitals.temperature }}</td>
+                            <td>{{ vitals.blood_pressure }}</td>
+                            <td>{{ vitals.pulse_rate }}</a></td>
+                            <td>{{ vitals.sp_02 }}</td>
+                        </tr>       
+                        {% endfor %}
+                        {% endfor %}            
+                    </tbody>
+                  </table>
+                  
+            </div>
+    </div>
+  <br>
+    <!--DIAGNOSIS-->
+  <div class="card">
+    <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'make_diagnosis' enc_id=encounter.id %}">Make Diagnosis</a></h5>
+    {% for d in diagnosis %}
+    <ul>
+      {% if d.final %}
+      <li><p class="card-text">{{d.diagnosis}} | by: {{d.created_by}}</p></li>  
+      {% else %}
+      
+      <li>{{d.diagnosis}} | <em>(Prelinary diagnosis)</em> | by: {{d.created_by}} </li>
+      {% endif %} 
+    </ul>
+    {% endfor %}
+    <!-- <a href="#" class="btn btn-primary">Go somewhere</a> -->
+  </div>
+</div>
+
+<!-- PRESCRIPTIONS -->
+    <div class="collapse" id="drugs">
+        <div class="card card-body">
+            <!-- form for prescription for patient -->
+               
+            <table class="table table-striped table-hover table-responsive">
+              <h4>Drugs/Consummables</h4>
+              <thead>
+                <tr>
+                  <!-- <th scope="col">Ecounter</th> -->
+                  <!-- <th scope="col">PID</th> -->
+                  <th scope="col">Date</th>
+                  <th scope="col">Drug</th>
+                  <th scope="col">Dosage</th>
+                  <th scope="col">Prescribed by</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              {% for patient in current_encounter %}
+              {% for prescription in patient.prescription_set.all|dictsortreversed:"timestamp" %} 
+              <tr>
+                  <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                  <td>{{ prescription.timestamp }}</td>
+                  <td>
+                    {{ prescription.item }} ({{ prescription.strength }})
+                  </td>
+                  <td>{{ prescription.qty_per_take }} x {{ prescription.times_daily }} x {{ prescription.no_of_days }}</td>
+                  <td>{{ prescription.created_by|capfirst }}</td>
+              </tr>
+              {% endfor %}
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+   
+
+    <div class="collapse" id="lab">
+        <div class="card card-body">
+            <table class="table table-striped table-hover table-responsive">
+              <h4>Laboratory Investigations</h4>
+              <thead>
+                <tr>
+                  <!-- <th scope="col">Ecounter</th> -->
+                  <!-- <th scope="col">PID</th> -->
+                  <th scope="col">Date Requested</th>
+                  <th scope="col">Test</th>
+                  <th scope="col">Ordered by</th>
+                  <th scope="col">Status</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              {% for patient in current_encounter %}
+              {% for investigation in patient.labrequest_set.all|dictsortreversed:"date_created" %} 
+              <tr>
+                  <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                  <td>{{ investigation.date_created }}</td>
+                  <td>{{ investigation.test }}</td>
+                  <td>{{ investigation.created_by.first_name }} 
+                      {{ investigation.created_by.last_name }}</td>
+                  {% if investigation.done %}
+                    {% for result in investigation.labresult_set.all %}
+                      <td style="color: green;">{{ result.result }}</td> 
+                      <td>{{ result.date_created|timesince }} ago</td>     
+                    {% endfor %}
+                  {% else %}
+                      <td>Pending</td>
+                  {% endif %}
+              </tr>
+              {% endfor %}
+              {% endfor %}
+          </table>
+        </div>
+    </div>
+
+
+    <div class="collapse" id="radiology">
+      <div class="card card-body">
+
+        <!-- form for raising Radiology Service for patient -->
+       
+        <table class="table table-striped table-hover table-responsive">
+            <h4>Radiology Services</h4>
+            <thead>
+              <tr>
+                <!-- <th scope="col">Ecounter</th> -->
+                <!-- <th scope="col">PID</th> -->
+                <th scope="col">Date</th>
+                <th scope="col">Service</th>
+                <th scope="col">Unit</th>
+              </tr>
+            </thead>
+            {% for patient in current_encounter %}
+            {% for radiology in patient.raiseradiologyservice_set.all|dictsortreversed:"date" %} 
+            <tr>
+                <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                <td>{{ radiology.date }}</td>
+                <td>{{ radiology.radiology_service }}</td>
+                <td>{{ radiology.unit }}</td>
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </table>
+        <br>
+    </div>
+  </div>
+
+
+    <div class="collapse" id="services">
+        <div class="card card-body">
+
+                <!-- form for raising Medical Service for patient -->
+               
+                <table class="table table-striped table-hover table-responsive">
+                    <h4>Medical Services</h4>
+                    <thead>
+                      <tr>
+                        <!-- <th scope="col">Ecounter</th> -->
+                        <!-- <th scope="col">PID</th> -->
+                        <th scope="col">Date</th>
+                        <th scope="col">Service</th>
+                        <th scope="col">Unit</th>
+                      </tr>
+                    </thead>
+                    {% for patient in current_encounter %}
+                    {% for medical_service in patient.patientencounterservice_set.all|dictsortreversed:"date" %} 
+                    <tr>
+                        <!-- <td>{{ vitals.date|date:"d-m-y" }} {{ vitals.date|time:"h:i a" }}</td> -->
+                        <td>{{ medical_service.date }}</td>
+                        <td>{{ medical_service.medical_service }}</td>
+                        <td>{{ medical_service.unit }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </table>
+                <br>
+        </div>
+    </div>
+    <br>
+    
+
+
+    <!-- cards -->
+    <!-- Pharmacy Card -->
+    <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              {% for e in current_encounter|slice:":1" %}
+              <a href="{% url 'prescription' enc_id=e.id %}" class=""><h5>Prescription</h5></a>
+              <h6 class="card-title">Recent Prescriptions</h6>
+              <p class="card-text">Patients drug allergy shows up here!</p>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- Card for Lab -->
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <a href="{% url 'lab_request' enc_id=e.id %}" class=""><h5>Lab Investigation</h5></a>
+              <h6 class="card-title">Recent Investigations</h6>
+              <p class="card-text">Flagged investigations show up here!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+
+      <!-- Card for Radiology -->
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">
+              <a href="{% url 'raise_patient_radiology_service' encounter_id=e.id %}" class=""><h5>Radiology Investigation</h5></a>  
+              <h6 class="card-title">Recent Investigations</h6>
+              <p class="card-text">Flagged investigations show up here!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card for Medical Services -->
+        <div class="col-sm-6">
+          <div class="card">
+            <div class="card-body">              
+              <a href="{% url 'raise_patient_medical_service' encounter_id=e.id %}" class=""><h5>Medical Services</h5></a>
+              <h6 class="card-title">Recent Investigations</h6>
+              <p class="card-text">Flagged services show up here!</p>              
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %} 
+</div>
+
+
+  {% endblock %}

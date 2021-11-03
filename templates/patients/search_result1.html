@@ -1,0 +1,65 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Search Results {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+<div class="container">
+    {% if not query %}
+            <center><h3>{{ query1 }}</h3></center>
+    {% else %}
+        {% if patient.count == 0 %}
+            <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
+        {% else %}
+            {% if patient.count == 1 %}
+                <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6>
+                <br>
+                {% for pt in patient %} 
+                <a href="{% url 'lab_request' pid=pt.id %}">
+                    <button class="btn btn-primary">
+                        Request Lab Investigation
+                    </button>
+                </a>
+                <a href="{% url 'raise_patient_radiology_service' pid=pt.id %}">
+                    <button class="btn btn-primary">
+                        Request Radiology Investigation
+                    </button>
+                </a> 
+                {% endfor %} 
+            {% else %}
+            <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
+            {% endif %} 
+
+        <div class="table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">PID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Marital status</th>
+                <th scope="col">Date of Birth</th>
+                <!-- <th scope="col">Refer to</th> -->
+            </tr>
+            </thead>
+        
+            <tbody>
+                {% for pt in patient %}            
+                    <tr>
+                        <th scope="row"><a href="{{ pt.get_absolute_url }}"><button class="btn btn-success">{{ pt.id }}</button></a></th>
+                        <!-- <td>{{ qs.id }}</td> -->
+                        <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
+                        <td>{{ pt.gender|capfirst }}</td>
+                        <td>{{ pt.marital_status|capfirst }}</td>
+                        <td>{{ pt.date_of_birth|capfirst }}</td>                    
+                    </tr> 
+                {% endfor %}              
+            </tbody>
+        </table> 
+        </div>          
+        {% endif %} 
+    {% endif %}             
+</div>
+{% endblock %}

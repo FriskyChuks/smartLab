@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<br>
+<div class="container">
+  <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+    <a href="{% url 'search_appointment' %}"><button type="button" class="btn btn-primary col-md-12">Schedule New Appointment</button></a>
+  </div>
+  <br>
+  <h4>Pending Appointments</h4>
+  <br>
+    <div class="row">
+      <div class="col">
+        <div class="card card-body">
+          Filter by:
+          <form method="get">
+              Clinic: {{ myFilter.form.clinic }} 
+              Patient: {{ myFilter.form.patient }}
+              {{ myFilter.form.appointment_date }}
+            <button class="btn btn-primary" type="submit">Search</button>
+          </form>
+        </div>
+      </div>
+    </div>
+      <br>
+
+    <div>
+      {% if not appointments %}
+        <h4>No pending Appointments!</h4>
+      {% else %}
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Clinic</th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Patient</th>
+              {% for appointment in appointments|slice:":1" %}
+              {% if appointment.status == "pending" %} 
+              <th scope="col">Actions</th>
+              <th scope="col"></th>
+              {% endif %}
+              {% endfor %}
+            </tr>
+          </thead>
+          {% for appointment in appointments %}
+          <tbody>
+            <tr>
+              <td>{{ appointment.id }}</td>
+              <td>{{ appointment.clinic }}</td>
+              <td>{{ appointment.appointment_date }}</td>
+              <td>{{ appointment.appointment_time }}</td>
+              <td>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }} ({{ appointment.patient.id }})</td>
+              {% if appointment.status == "pending" %} 
+              <td><a href="{% url 'edit_appointment' appointment.id %}">Re-schedule</a></td>
+              <td><a href="#">Cancel</a></td>
+              {% endif %}
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>   
+</div>
+
+{% endblock %}

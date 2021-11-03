@@ -1,0 +1,22 @@
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">DATE</th>
+        <th scope="col">PATIENT</th>
+        <th scope="col">AMOUNT</th>
+        <th scope="col">SERVICE</th>
+        <th scope="col">CASHIER</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for p in payments %}
+        <tr>
+            <td>{{ p.date_created }}</td>
+            <td>{{ p.bill.patient.id }}</td>
+            <td>{{ p.payment }}</td>
+            <td>{{ p.bill }}</td>
+            <td>{{ p.payment.created_by.first_name }} {{ p.payment.created_by.last_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>

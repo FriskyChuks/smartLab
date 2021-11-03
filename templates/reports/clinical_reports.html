@@ -1,0 +1,100 @@
+{% extends "layouts/base.html" %}
+{% load humanize %}
+
+{% block title %} Appointments {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+ 
+<h3>Clinical Report</h3>
+<form action="." method="GET">
+    <div class="form-row">         
+        <div class="form-group col-4">
+            <div class="input-group input-group-merge search-bar">
+                <span class="input-group-text" id="topbar-addon">
+                  <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                  </svg>
+                </span>
+                <input type="text" class="form-control" aria-label="Search" aria-describedby="topbar-addon"
+                name="pid_exact" placeholder="Patient ID exact...">
+            </div>
+        </div> 
+        <div class="form-group col-8">
+          <div class="input-group input-group-merge search-bar">
+              <span class="input-group-text" id="topbar-addon">
+                <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                </svg>
+              </span>
+              <input type="text" class="form-control" aria-label="Search" aria-describedby="topbar-addon"
+              name="service_contains" placeholder="Service contains...">
+          </div>
+      </div>        
+    </div>
+   
+    <div class="form-row">
+        <div class="col-md-4">
+          <label for="validationCustom04" class="form-label">Service Category</label>
+          <select class="form-select" id="validationCustom04" name="service_category">
+            <option selected disabled value="">Select Category</option>
+            <option value="lab">Lab Services</option>
+            <option value="rad">Radiology Services</option>
+          </select>
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+          <label for="publishDateMin">Transaction date from</label>
+          <input type="date" class="form-control" id="publishDateMin" name="date_from">
+        </div>
+        <div class="form-group col-md-2 col-lg-2">
+          <label for="publishDateMax">Transaction date to</label>
+          <input type="date" class="form-control" id="publishDateMax" name="date_to">
+        </div>
+        <!-- <div class="form-group col-md-4">
+          <label for="cashier">Cashier</label>
+          <select id="cashier" class="form-control" name="cashier">
+            {% if request.user.group.name == 'admin' %}
+              <option selected disabled value="">Select cashier...</option>
+              {% for officer in cash_officers %}
+                <option value="{{ officer.id }}">{{ officer.first_name }} {{ officer.last_name }}</option>
+              {% endfor %}
+            {% else %}
+            <option selected disabled value="">Select cashier...</option>
+            {% endif %}
+          </select>
+        </div> -->
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+    <br>    
+</form>
+<br>
+<h3>Record Count: {{ bills.count }}</h3>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">DATE</th>
+        <th scope="col">PATIENT</th>
+        <th scope="col">SERVICE</th>
+        <th scope="col">CREATED BY</th>
+        <!-- <th scope="col">CASHIER</th> -->
+      </tr>
+    </thead>
+    <tbody>
+        {% for item in bills %}
+            <tr>
+                <td>{{ item.date_created }}</td>
+                <td>{{ item.patient.id }}</td>
+                <td>{{ item }}</td>
+                <td>{{ item.created_by }}</td>
+                <!-- <td>{{ item.payment.created_by.first_name }} {{ p.payment.created_by.last_name }}</td> -->
+            </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
+

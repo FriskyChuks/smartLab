@@ -1,0 +1,42 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Registration {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<!-- <style>
+#form {
+  border: 0.5px solid grey;
+  border-radius: 5px;
+  /* background-color: #f2f2f2; */
+  padding: 5px;
+}
+</style> -->
+
+<div class="container" id="form">
+  <div class="container">
+    <h4>Patient Regisitration</h4><br>
+    <form id="registration-form" class="row g-3" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="col-md-12"><b>*Personal Info</b> </div>
+        <div class="col-md-4">Firstname: {{ form.first_name }}</div>
+        <div class="col-md-4">Lastname: {{ form.last_name }}</div>
+        <div class="col-md-4">Othernames: {{ form.other_names }}</div>
+        <div class="col-md-4">Gender: {{ form.gender }}</div>
+        <div class="col-md-4">Date of Birth: {{ form.date_of_birth }}</div>
+        <div class="col-md-4">Marital Status: {{ form.marital_status }}</div>
+        <h5></h5>
+        <div class="col-md-12"><b>*Address Line</b> </div>
+        <div class="col-md-4">Phone 1: {{ form.phone_1 }}</div>
+        <div class="col-md-4">Phone 2: {{ form.phone_2 }}</div>
+        <div class="col-md-12">Address: {{ form.address }}</div>
+
+        <div class="col-md-12"><input type="submit" class="btn btn-success", value="submit"></div>
+      </form>
+    </div>
+</div>
+
+
+{% endblock %}

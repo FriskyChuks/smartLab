@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container">
+    {% if not query %}
+            <center><h3>{{ query1 }}</h3></center>
+    {% else %}
+        {% if patient.count == 1 %}
+            <h6>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> record</h6>
+            {% for pt in patient %} 
+                
+                <div style="display: block; width: 100%;" class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{% url 'pending_bills' pid=pt.id %}"><button type="button" class="btn btn-primary col-md-4">CLick here for Bills/Payments for {{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }} </button></a>
+                </div>
+                <br>
+                
+            {% endfor %} 
+        {% else %}
+        <h5>Your search for <b>{{ query }}</b> yielded <b>{{ patient.count }}</b> records</h5>
+        {% endif %} 
+    <hr>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">PID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Gender</th>
+            <th scope="col">Marital status</th>
+            <th scope="col">Date of Birth</th>
+            <th scope="col">Refer to</th>
+            <th scope="col">Current location</th>
+        </tr>
+        </thead>
+    
+        <tbody>
+            {% for pt in patient %}            
+                <tr>
+                    <th scope="row"><a href="{{ pt.get_absolute_url }}">{{ pt.id }}</a></th>
+                    <!-- <td>{{ qs.id }}</td> -->
+                    <td>{{ pt.first_name }} {{ pt.last_name }} {{ pt.other_names }}</td>
+                    <td>{{ pt.gender|capfirst }}</td>
+                    <td>{{ pt.marital_status|capfirst }}</td>
+                    <td>{{ pt.date_of_birth|capfirst }}</td>
+                    <td><a href="{{ pt.get_absolute_url }}">This one</a></td>
+                    {% for p in pt.patientencounter_set.all %}
+                        {% if p.active  %}
+                            {% if p.current_clinic %}
+                                <td>{{ p.current_clinic.clinic }} Clinic</td>                          
+                            {% else %}
+                                <td>{{ p.current_ward.ward }} Ward</td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tr> 
+            {% endfor %}              
+        </tbody>
+    </table>           
+    {% endif %}              
+</div>
+{% endblock %}

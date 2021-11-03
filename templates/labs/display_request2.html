@@ -1,0 +1,41 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Display Request {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<br>
+
+  {% if not patient_request %}
+    <h1>No pending request for today</h1>
+  {% else %}
+  <div class="row">
+    <div class="col-sm-12">  
+      <div class="card">
+        <div class="card-header">
+          <h5>Today's Pending Lab Request: <small>Click to view detail </small></h5>
+        </div>
+
+        <div class="card-body">
+
+          
+          {% for p in patient_request %}
+                
+                <a href="{% url 'request_detail' pid=p.patient.id %}" class="btn btn-outline-dark">
+                  {{ p.patient }} | ({{ p.total }}) 
+                </a><br>
+            
+          {% endfor %}
+        </div>
+        <div class="card-header">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+
+{% endblock %}

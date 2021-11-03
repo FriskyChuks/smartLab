@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Raise Rad. Service {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<h5>Create Services for <b>{{ patient.first_name }} {{ patient.last_name }}</b> </h5> 
+<br>
+
+<form class="row g-3" id="form" method="POST" action="">{% csrf_token %} 
+    {{ formset.management_form }}
+    <div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Select service</th>
+            <th scope="col">Qty</th>
+            <th scope="col">Clinical Information</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+          <tr>
+            <td>{{ form.radiology_service }}</td>
+            <td>{{ form.unit }}</td>
+            <td>{{ form.clinical_info }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table><br>
+    </div>
+      <input type="submit" class="btn btn-success", value="Save">
+    <!-- {% for form in formset %}
+        <div class="col-md-2">Select service: {{ form.radiology_service }}</div> &nbsp; &nbsp;
+        &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; 
+        <div class="col-md-2">Qty: {{ form.unit }}</div> &nbsp; &nbsp; &nbsp;
+        <div class="col-md-2">Qty: {{ form.clinical_info }}</div> &nbsp; &nbsp; &nbsp;
+        <hr>
+    {% endfor %}
+    <input type="submit" class="btn btn-success", value="Save"> -->
+</form>
+
+
+{% endblock %}

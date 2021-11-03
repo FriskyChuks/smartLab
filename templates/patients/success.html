@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Success {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div style="text-align: center;">
+  {% if messages %} 
+  {% for result in messages %} 
+   <h3>{{ result }}</h3> 
+  {% endfor %}
+  {% endif %}
+  <div>
+    <button type="submit">
+      <a href="{% url 'lab_request' pid=pid %}" >
+      Request Lab Investigation
+      </a>
+    </button>
+  
+    <button type="submit">
+      <a href="{% url 'raise_patient_radiology_service' pid=pid %}" >
+        Request Radiology Investigation
+      </a>
+    </button>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for bill in bills %}
+    {% if bill.medical_service %}
+        {{ bill.medical_service }}--N{{ bill.medical_service.medical_service.price }}<br>
+    {% endif %}
+    {% if bill.radiology_service %}
+        {{ bill.radiology_service }} <br>
+    {% endif %}   
+    {% if bill.prescription %}
+        {{ bill.prescription }} <br>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

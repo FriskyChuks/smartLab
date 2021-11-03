@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %} <br>
+
+<div class="container">
+    <div class="row g-2">
+
+       {% include 'appointments/snippets/schedule.html' with instance=form %}
+       
+        <div class="col-md-7">
+          <h4>Pending Appointments</h4>
+          {% if not appointment %}
+            <h4>No pending Appointments!</h4>
+          {% else %}
+          <table class="table-responsive">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Clinic</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">Time</th>
+                  {% for appointment in appointment|slice:":1" %}
+                  {% if appointment.status == "pending" %} 
+                  <th scope="col">Actions</th>
+                  <th scope="col"></th>
+                  {% endif %}
+                  {% endfor %}
+                </tr>
+              </thead>
+              {% for appointment in appointment %}
+              <tbody>
+                <tr>
+                  <td>{{ appointment.id }}</td>
+                  <td>{{ appointment.clinic }}</td>
+                  <td>{{ appointment.appointment_date }}</td>
+                  <td>{{ appointment.appointment_time }}</td>
+                  {% if appointment.status == "pending" %} 
+                    {% for patient in patient %}
+                    <td><a href="{% url 'edit_appointment' appointment.id %}">Re-schedule</a></td>
+                    <td><a href="#">Cancel</a></td>
+                    {% endfor %}
+                  {% endif %}
+                </tr>
+              </tbody>
+            {% endfor %}
+          </table>
+          {% endif %}
+        </div>
+    </div>   
+</div>
+
+{% endblock %}
