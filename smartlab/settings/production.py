@@ -84,6 +84,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'smartlab.wsgi.application'
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
